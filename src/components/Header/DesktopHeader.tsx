@@ -50,7 +50,7 @@ const DesktopHeader: React.FC = () => {
             width={32}
             height={32}
           />
-          <span>PetalStack</span>
+          <span>Mahlzeiten Planer</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -59,31 +59,31 @@ const DesktopHeader: React.FC = () => {
             to="/" 
             className={`${styles.navLink} ${isActive('/') ? styles.active : ''}`}
           >
-            Home
+            Startseite
           </Link>
           <Link 
-            to="/page-1" 
-            className={`${styles.navLink} ${isActive('/page-1') ? styles.active : ''}`}
+            to="/recipes" 
+            className={`${styles.navLink} ${isActive('/recipes') ? styles.active : ''}`}
           >
-            Page 1
+            Rezepte
           </Link>
           <Link 
-            to="/page-2" 
-            className={`${styles.navLink} ${isActive('/page-2') ? styles.active : ''}`}
+            to="/meal-plan" 
+            className={`${styles.navLink} ${isActive('/meal-plan') ? styles.active : ''}`}
           >
-            Page 2
+            Mahlzeiten Plan
           </Link>
           <Link 
-            to="/page-3" 
-            className={`${styles.navLink} ${isActive('/page-3') ? styles.active : ''}`}
+            to="/shopping-list" 
+            className={`${styles.navLink} ${isActive('/shopping-list') ? styles.active : ''}`}
           >
-            Page 3
+            Einkaufsliste
           </Link>
           <Link 
-            to="/grids" 
-            className={`${styles.navLink} ${isActive('/grids') ? styles.active : ''}`}
+            to="/profile" 
+            className={`${styles.navLink} ${isActive('/profile') ? styles.active : ''}`}
           >
-            Grids
+            Profil
           </Link>
         </nav>
 
@@ -91,7 +91,7 @@ const DesktopHeader: React.FC = () => {
         <button 
           className={styles.mobileMenuButton}
           onClick={toggleMenu}
-          aria-label="Toggle mobile menu"
+          aria-label="Mobilmenü umschalten"
         >
           {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
@@ -102,7 +102,7 @@ const DesktopHeader: React.FC = () => {
           <button 
             className={styles.mobileCloseButton}
             onClick={toggleMenu}
-            aria-label="Close mobile menu"
+            aria-label="Mobilmenü schließen"
           >
             <X size={24} />
           </button>
@@ -114,31 +114,31 @@ const DesktopHeader: React.FC = () => {
                 to="/" 
                 className={`${styles.mobileNavLink} ${isActive('/') ? styles.active : ''}`}
               >
-                Home
+                Startseite
               </Link>
               <Link 
-                to="/page-1" 
-                className={`${styles.mobileNavLink} ${isActive('/page-1') ? styles.active : ''}`}
+                to="/recipes" 
+                className={`${styles.mobileNavLink} ${isActive('/recipes') ? styles.active : ''}`}
               >
-                Page 1
+                Rezepte
               </Link>
               <Link 
-                to="/page-2" 
-                className={`${styles.mobileNavLink} ${isActive('/page-2') ? styles.active : ''}`}
+                to="/meal-plan" 
+                className={`${styles.mobileNavLink} ${isActive('/meal-plan') ? styles.active : ''}`}
               >
-                Page 2
+                Mahlzeiten Plan
               </Link>
               <Link 
-                to="/page-3" 
-                className={`${styles.mobileNavLink} ${isActive('/page-3') ? styles.active : ''}`}
+                to="/shopping-list" 
+                className={`${styles.mobileNavLink} ${isActive('/shopping-list') ? styles.active : ''}`}
               >
-                Page 3
+                Einkaufsliste
               </Link>
               <Link 
-                to="/grids" 
-                className={`${styles.mobileNavLink} ${isActive('/grids') ? styles.active : ''}`}
+                to="/profile" 
+                className={`${styles.mobileNavLink} ${isActive('/profile') ? styles.active : ''}`}
               >
-                Grids
+                Profil
               </Link>
             </div>
 

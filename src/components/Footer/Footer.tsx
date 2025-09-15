@@ -28,28 +28,28 @@ const Footer: React.FC = () => {
                 width={24}
                 height={24}
               />
-              <span>PetalStack</span>
+              <span>Mahlzeiten Planer</span>
             </Link>
             <p className={styles.brandDescription}>
-              A modern, production-ready React TypeScript boilerplate with beautiful UI/UX, 
-              smooth animations, and a comprehensive design system.
+              Ein moderner, benutzerfreundlicher Mahlzeiten Planer mit schöner Benutzeroberfläche, 
+              flüssigen Animationen und einem umfassenden Design-System.
             </p>
           </div>
 
           {/* Quick Links */}
           <div className={styles.quickLinks}>
-            <h3>Quick Links</h3>
+            <h3>Schnellzugriff</h3>
             <ul>
-              <li><Link to="/">Home</Link></li>
-              <li><Link to="/page-1">Page 1</Link></li>
-              <li><Link to="/page-2">Page 2</Link></li>
-              <li><Link to="/page-3">Page 3</Link></li>
+              <li><Link to="/">Startseite</Link></li>
+              <li><Link to="/recipes">Rezepte</Link></li>
+              <li><Link to="/meal-plan">Mahlzeiten Plan</Link></li>
+              <li><Link to="/shopping-list">Einkaufsliste</Link></li>
             </ul>
           </div>
 
           {/* Resources */}
           <div className={styles.resources}>
-            <h3>Resources</h3>
+            <h3>Ressourcen</h3>
             <ul>
               <li><a href="https://react.dev" target="_blank" rel="noopener noreferrer">React Docs</a></li>
               <li><a href="https://www.typescriptlang.org" target="_blank" rel="noopener noreferrer">TypeScript</a></li>
@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
 
           {/* Social Links */}
           <div className={styles.socialLinks}>
-            <h3>Connect</h3>
+            <h3>Kontakt</h3>
             <div className={styles.socialIcons}>
               <a 
                 href="https://github.com" 
@@ -100,8 +100,8 @@ const Footer: React.FC = () => {
         <div className={styles.bottomBar}>
           <div className={styles.copyright}>
             <p>
-              © {currentYear} PetalStack. Made with{' '}
-              <Heart size={16} className={styles.heart} /> by developers for developers.
+              © {currentYear} Mahlzeiten Planer. Entwickelt mit{' '}
+              <Heart size={16} className={styles.heart} /> für eine gesunde Ernährung.
             </p>
           </div>
         </div>

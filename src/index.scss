@@ -58,9 +58,21 @@ html {
   text-rendering: optimizeLegibility;
 }
 
-// Set root font size for rem units
+// Set root font size for rem units - Mobile First
 html {
-  font-size: 16px;
+  font-size: 14px; // Smaller base font for mobile
+  
+  @media (min-width: 640px) {
+    font-size: 15px;
+  }
+  
+  @media (min-width: 768px) {
+    font-size: 16px;
+  }
+  
+  @media (min-width: 1024px) {
+    font-size: 16px;
+  }
 }
 
 // Initialize light theme by default
@@ -109,29 +121,41 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h1 {
-  font-size: 3rem;
+  font-size: 2rem; // Mobile first - smaller
   font-weight: 800;
   
-  @media (max-width: 640px) {
-    font-size: 2.25rem;
+  @media (min-width: 640px) {
+    font-size: 2.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    font-size: 3rem;
   }
 }
 
 h2 {
-  font-size: 2.25rem;
+  font-size: 1.5rem; // Mobile first
   font-weight: 700;
   
-  @media (max-width: 640px) {
+  @media (min-width: 640px) {
     font-size: 1.875rem;
+  }
+  
+  @media (min-width: 768px) {
+    font-size: 2.25rem;
   }
 }
 
 h3 {
-  font-size: 1.875rem;
+  font-size: 1.25rem; // Mobile first
   font-weight: 600;
   
-  @media (max-width: 640px) {
+  @media (min-width: 640px) {
     font-size: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    font-size: 1.875rem;
   }
 }
 

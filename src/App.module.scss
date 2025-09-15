@@ -17,14 +17,14 @@
   }
 }
 
-// Modern Theme Toggle Button
+// Modern Theme Toggle Button - Mobile First
 .themeToggle {
   position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
+  top: 1rem;
+  right: 1rem;
   z-index: 1030;
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -33,7 +33,7 @@
   background: var(--color-card);
   color: var(--color-foreground);
   border: 1px solid var(--color-border);
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(10px);
   
@@ -41,8 +41,8 @@
   &:hover {
     background: var(--color-accent);
     border-color: var(--color-muted-foreground);
-    transform: translateY(-2px);
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 12px -2px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
   }
   
   // Active state
@@ -62,11 +62,11 @@
   }
   
   // Responsive positioning
-  @media (max-width: 640px) {
-    bottom: 1rem;
-    right: 1rem;
-    width: 2.5rem;
-    height: 2.5rem;
+  @media (min-width: 640px) {
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 3rem;
+    height: 3rem;
   }
 }
 

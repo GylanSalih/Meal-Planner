@@ -70,27 +70,27 @@ export default ModernApp;`;
       <div className={styles.heroContent}>
         <div className={styles.heroBadge}>
           <Sparkles size={16} />
-          <span>Modern React TypeScript Boilerplate</span>
+          <span>Moderner Mahlzeiten Planer</span>
         </div>
         
         <h1 className={styles.heroTitle}>
-          Build Beautiful Apps
-          <span className={styles.gradientText}> Faster</span>
+          Plane deine Mahlzeiten
+          <span className={styles.gradientText}> intelligent</span>
         </h1>
         
         <p className={styles.heroDescription}>
-          A modern, production-ready React TypeScript boilerplate with beautiful UI/UX, 
-          smooth animations, and a comprehensive design system. Built for developers who 
-          care about code quality and user experience.
+          Ein moderner, benutzerfreundlicher Mahlzeiten Planer mit schöner Benutzeroberfläche, 
+          flüssigen Animationen und einem umfassenden Design-System. Entwickelt für Menschen, 
+          die Wert auf gesunde Ernährung und Organisation legen.
         </p>
         
         <div className={styles.ctaButtons}>
-          <Link to="/page-1" className={styles.primaryButton}>
-            Get Started
+          <Link to="/meal-plan" className={styles.primaryButton}>
+            Jetzt starten
             <ArrowRight size={20} />
           </Link>
-          <Link to="/page-2" className={styles.secondaryButton}>
-            View Examples
+          <Link to="/recipes" className={styles.secondaryButton}>
+            Rezepte entdecken
           </Link>
         </div>
       </div>
