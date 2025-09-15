@@ -10,15 +10,6 @@ const Calendar: React.FC = () => {
     <div className={styles.calendar}>
       {/* Top Bar */}
       <div className={styles.topBar}>
-        <div className={styles.statusBar}>
-          <span className={styles.time}>9:41</span>
-          <div className={styles.statusIcons}>
-            <div className={styles.signal}></div>
-            <div className={styles.wifi}></div>
-            <div className={styles.battery}></div>
-          </div>
-        </div>
-        
         <div className={styles.header}>
           <Link to="/" className={styles.backButton}>
             <ArrowLeft size={20} />

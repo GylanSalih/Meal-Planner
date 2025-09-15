@@ -9,87 +9,15 @@
   }
 }
 
-// Top Bar with Status Bar and Search
+// Top Bar with Search
 .topBar {
   background: #ffffff;
-  padding: 0 16px 16px 16px;
+  padding: 16px;
   border-bottom: 1px solid #e5e7eb;
   
   [data-theme="dark"] & {
     background: #1f2937;
     border-bottom-color: #374151;
-  }
-}
-
-.statusBar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  margin-bottom: 12px;
-}
-
-.time {
-  font-weight: 600;
-  font-size: 17px;
-  color: #000000;
-  
-  [data-theme="dark"] & {
-    color: #ffffff;
-  }
-}
-
-.statusIcons {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.signal, .wifi, .battery {
-  width: 18px;
-  height: 12px;
-  background: #000000;
-  border-radius: 2px;
-  
-  [data-theme="dark"] & {
-    background: #ffffff;
-  }
-}
-
-.wifi {
-  width: 16px;
-  height: 12px;
-  background: linear-gradient(45deg, transparent 30%, #000000 30%, #000000 70%, transparent 70%);
-  
-  [data-theme="dark"] & {
-    background: linear-gradient(45deg, transparent 30%, #ffffff 30%, #ffffff 70%, transparent 70%);
-  }
-}
-
-.battery {
-  width: 24px;
-  height: 12px;
-  border: 1px solid #000000;
-  border-radius: 2px;
-  position: relative;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    right: -3px;
-    top: 3px;
-    width: 2px;
-    height: 6px;
-    background: #000000;
-    border-radius: 0 1px 1px 0;
-  }
-  
-  [data-theme="dark"] & {
-    border-color: #ffffff;
-    
-    &::after {
-      background: #ffffff;
-    }
   }
 }
 

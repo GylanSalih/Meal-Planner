@@ -4,8 +4,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import BottomNavigation from './components/BottomNavigation/BottomNavigation';
 import { Moon, Sun } from 'lucide-react';
 import Home from './Pages/Home/Home';
-import PageOne from './Pages/PageOne/PageOne';
-import PageTwo from './Pages/PageTwo/PageTwo';
+import Recipes from './Pages/Recipes/Recipes';
+import Shopping from './Pages/Shopping/Shopping';
 import PageThree from './Pages/PageThree/PageThree';
 import Calendar from './Pages/Calendar/Calendar';
 import styles from './App.module.scss';
@@ -30,8 +30,8 @@ const AppContent: React.FC = () => {
 
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/recipes" element={<PageOne />} />
-          <Route path="/search" element={<PageTwo />} />
+          <Route path="/recipes" element={<Recipes />} />
+          <Route path="/shopping" element={<Shopping />} />
           <Route path="/meal-plan" element={<PageThree />} />
           <Route path="/calendar" element={<Calendar />} />
         </Routes>

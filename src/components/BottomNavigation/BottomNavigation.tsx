@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ChefHat, Search, BookOpen, Calendar, User } from 'lucide-react';
+import { ChefHat, ShoppingCart, BookOpen, Calendar, User } from 'lucide-react';
 import styles from './BottomNavigation.module.scss';
 
 const BottomNavigation: React.FC = () => {
@@ -22,12 +22,12 @@ const BottomNavigation: React.FC = () => {
       </Link>
 
       <Link 
-        to="/search" 
-        className={`${styles.navItem} ${isActive('/search') ? styles.active : ''}`}
-        aria-label="Suchen"
+        to="/shopping" 
+        className={`${styles.navItem} ${isActive('/shopping') ? styles.active : ''}`}
+        aria-label="Einkaufen"
       >
-        <Search size={24} />
-        <span className={styles.label}>Suchen</span>
+        <ShoppingCart size={24} />
+        <span className={styles.label}>Einkaufen</span>
       </Link>
 
       <Link 
