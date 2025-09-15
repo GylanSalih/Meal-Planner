@@ -5,12 +5,13 @@ import styles from './EditItemModal.module.scss';
 interface EditItemModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (item: { name: string; quantity: string; unit: string; category: string }) => void;
+  onSave: (item: { name: string; quantity: string; unit: string; category: string; customGroupName?: string }) => void;
   initialData?: {
     name: string;
     quantity: string;
     unit: string;
     category: string;
+    customGroupName?: string;
   };
   isNewItem?: boolean;
 }
@@ -26,8 +27,10 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
     name: '',
     quantity: '',
     unit: 'g',
-    category: 'alle'
+    category: 'alle',
+    customGroupName: ''
   });
+
 
   const categories = [
     { id: 'alle', name: 'Alle' },
@@ -38,18 +41,25 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
     { id: 'backwaren', name: 'Backwaren' }
   ];
 
-  const units = ['g', 'kg', 'ml', 'l', 'Stück', 'EL', 'TL', 'Prise', 'Bund', 'Zweig', 'Flasche', 'Dose'];
+  const units = ['g', 'kg', 'ml', 'l', 'Stück', 'Packung', 'EL', 'TL', 'Prise', 'Bund', 'Zweig', 'Flasche', 'Dose'];
 
   useEffect(() => {
     if (isOpen) {
       if (initialData) {
-        setFormData(initialData);
+        setFormData({
+          name: initialData.name || '',
+          quantity: initialData.quantity || '',
+          unit: initialData.unit || 'g',
+          category: initialData.category || 'alle',
+          customGroupName: initialData.customGroupName || ''
+        });
       } else {
         setFormData({
           name: '',
           quantity: '',
           unit: 'g',
-          category: 'alle'
+          category: 'alle',
+          customGroupName: ''
         });
       }
     }
@@ -58,7 +68,13 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.name.trim() && formData.quantity.trim()) {
-      onSave(formData);
+      onSave({
+        name: formData.name,
+        quantity: formData.quantity,
+        unit: formData.unit,
+        category: formData.category,
+        customGroupName: formData.customGroupName
+      });
       onClose();
     }
   };
@@ -68,6 +84,7 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
       ...prev,
       [field]: value
     }));
+
   };
 
   if (!isOpen) return null;
@@ -129,6 +146,19 @@ const EditItemModal: React.FC<EditItemModalProps> = ({
                 <option key={category.id} value={category.id}>{category.name}</option>
               ))}
             </select>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label>Gruppierung (optional)</label>
+            <input
+              type="text"
+              value={formData.customGroupName}
+              onChange={(e) => handleInputChange('customGroupName', e.target.value)}
+              placeholder="z.B. Weihnachtszutaten, Party-Snacks, Backzutaten"
+            />
+            <small className={styles.helpText}>
+              Items mit dem gleichen Gruppierungsnamen werden zusammen gruppiert
+            </small>
           </div>
 
           <div className={styles.footer}>

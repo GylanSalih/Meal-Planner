@@ -16,10 +16,12 @@ const Shopping: React.FC = () => {
     shoppingItems, 
     shoppingRecipes,
     recipeGroups,
+    customGroups,
     addItem,
     addIndividualIngredients,
     removeRecipeFromCart,
     toggleRecipeGroup,
+    toggleCustomGroup,
     toggleItem, 
     editItem, 
     deleteItem, 
@@ -27,17 +29,17 @@ const Shopping: React.FC = () => {
   } = useShopping();
 
   const tags = [
-    { id: 'alle', name: 'Alle', count: shoppingItems.length },
-    { id: 'obst', name: 'Obst', count: shoppingItems.filter(item => item.category === 'obst').length },
-    { id: 'gemuese', name: 'Gemüse', count: shoppingItems.filter(item => item.category === 'gemuese').length },
-    { id: 'fleisch', name: 'Fleisch', count: shoppingItems.filter(item => item.category === 'fleisch').length },
-    { id: 'milchprodukte', name: 'Milchprodukte', count: shoppingItems.filter(item => item.category === 'milchprodukte').length },
-    { id: 'backwaren', name: 'Backwaren', count: shoppingItems.filter(item => item.category === 'backwaren').length }
+    { id: 'alle', name: 'Alle', count: shoppingItems.filter(item => !item.customGroupId).length },
+    { id: 'obst', name: 'Obst', count: shoppingItems.filter(item => item.category === 'obst' && !item.customGroupId).length },
+    { id: 'gemuese', name: 'Gemüse', count: shoppingItems.filter(item => item.category === 'gemuese' && !item.customGroupId).length },
+    { id: 'fleisch', name: 'Fleisch', count: shoppingItems.filter(item => item.category === 'fleisch' && !item.customGroupId).length },
+    { id: 'milchprodukte', name: 'Milchprodukte', count: shoppingItems.filter(item => item.category === 'milchprodukte' && !item.customGroupId).length },
+    { id: 'backwaren', name: 'Backwaren', count: shoppingItems.filter(item => item.category === 'backwaren' && !item.customGroupId).length }
   ];
 
 
-  // Separate regular items from recipe items
-  const regularItems = shoppingItems.filter(item => !item.isFromRecipe);
+  // Separate regular items from recipe items and custom group items
+  const regularItems = shoppingItems.filter(item => !item.isFromRecipe && !item.customGroupId);
 
   const filteredRegularItems = regularItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -48,7 +50,7 @@ const Shopping: React.FC = () => {
   const checkedItems = filteredRegularItems.filter(item => item.isChecked);
   const uncheckedItems = filteredRegularItems.filter(item => !item.isChecked);
 
-  // Calculate total items including recipe items
+  // Calculate total items including recipe items and custom groups
   const allItems = shoppingItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesTag = selectedTag === 'alle' || item.category === selectedTag;
@@ -79,22 +81,32 @@ const Shopping: React.FC = () => {
     setEditModalOpen(true);
   };
 
-  const handleSaveItem = (itemData: { name: string; quantity: string; unit: string; category: string }) => {
+  const handleSaveItem = (itemData: { name: string; quantity: string; unit: string; category: string; customGroupName?: string }) => {
     if (isNewItem) {
+      const customGroupId = itemData.customGroupName && itemData.customGroupName.trim() 
+        ? `custom_${itemData.customGroupName.trim()}` 
+        : undefined;
+        
       addItem({
         name: itemData.name,
         quantity: itemData.quantity,
         unit: itemData.unit,
         category: itemData.category,
+        ...(customGroupId && { customGroupId }),
         isChecked: false,
         isFromRecipe: false
       });
     } else if (editingItem) {
+      const customGroupId = itemData.customGroupName && itemData.customGroupName.trim() 
+        ? `custom_${itemData.customGroupName.trim()}` 
+        : undefined;
+        
       editItem(editingItem.id, {
         name: itemData.name,
         quantity: itemData.quantity,
         unit: itemData.unit,
-        category: itemData.category
+        category: itemData.category,
+        ...(customGroupId && { customGroupId })
       });
     }
     setEditModalOpen(false);
@@ -219,6 +231,67 @@ const Shopping: React.FC = () => {
                     <div className={styles.recipeGroupDetails}>
                       <h3 className={styles.recipeGroupName}>{group.recipeName}</h3>
                       <span className={styles.recipeGroupCount}>{group.items.length} Zutaten</span>
+                    </div>
+                  </div>
+                  <div className={styles.recipeGroupToggle}>
+                    {group.isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                  </div>
+                </div>
+                
+                {group.isExpanded && (
+                  <div className={styles.recipeGroupItems}>
+                    {group.items.map(item => (
+                      <div key={item.id} className={`${styles.shoppingItem} ${item.isChecked ? styles.checked : ''}`}>
+                        <button 
+                          className={styles.checkButton}
+                          onClick={() => toggleItem(item.id)}
+                        >
+                          <div className={`${styles.checkbox} ${item.isChecked ? styles.checked : ''}`}>
+                            {item.isChecked && <Check size={12} />}
+                          </div>
+                        </button>
+                        
+                        <div className={styles.itemInfo}>
+                          <h3 className={styles.itemName}>{item.name}</h3>
+                          <div className={styles.itemDetails}>
+                            <span className={styles.quantity}>{item.quantity} {item.unit}</span>
+                          </div>
+                        </div>
+                        
+                        <div className={styles.itemActions}>
+                          <div className={styles.actionButtons}>
+                            <button 
+                              className={styles.editButton}
+                              onClick={() => handleEditItem(item)}
+                            >
+                              <Edit3 size={16} />
+                            </button>
+                            <button 
+                              className={styles.deleteButton}
+                              onClick={() => deleteItem(item.id)}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Custom Groups */}
+            {customGroups.map(group => (
+              <div key={group.id} className={styles.recipeGroup}>
+                <div className={styles.recipeGroupHeader} onClick={() => toggleCustomGroup(group.id)}>
+                  <div className={styles.recipeGroupInfo}>
+                    <div className={styles.recipeGroupImage}>
+                      <div className={styles.customGroupIcon}>📁</div>
+                    </div>
+                    <div className={styles.recipeGroupDetails}>
+                      <h3 className={styles.recipeGroupName}>{group.name}</h3>
+                      <span className={styles.recipeGroupCount}>{group.items.length} Artikel</span>
                     </div>
                   </div>
                   <div className={styles.recipeGroupToggle}>
@@ -403,12 +476,14 @@ const Shopping: React.FC = () => {
           name: editingItem.name,
           quantity: editingItem.quantity,
           unit: editingItem.unit,
-          category: editingItem.category
+          category: editingItem.category,
+          customGroupName: editingItem.customGroupId ? editingItem.customGroupId.replace(/^custom_/, '') : ''
         } : {
           name: '',
           quantity: '',
           unit: 'g',
-          category: 'alle'
+          category: 'alle',
+          customGroupName: ''
         }}
         isNewItem={isNewItem}
       />

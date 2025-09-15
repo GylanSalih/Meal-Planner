@@ -10,6 +10,7 @@ export interface ShoppingItem {
   recipe?: string;
   recipeId?: number;
   isFromRecipe: boolean;
+  customGroupId?: string;
 }
 
 export interface ShoppingRecipe {
@@ -33,16 +34,25 @@ export interface RecipeGroup {
   isExpanded: boolean;
 }
 
+export interface CustomGroup {
+  id: string;
+  name: string;
+  items: ShoppingItem[];
+  isExpanded: boolean;
+}
+
 interface ShoppingContextType {
   shoppingItems: ShoppingItem[];
   shoppingRecipes: ShoppingRecipe[];
   recipeGroups: RecipeGroup[];
+  customGroups: CustomGroup[];
   addItem: (item: Omit<ShoppingItem, 'id'>) => void;
   addRecipeIngredients: (recipe: any) => void;
   addRecipeToCart: (recipe: any) => void;
   removeRecipeFromCart: (recipeId: number) => void;
   addIndividualIngredients: (recipeId: number) => void;
   toggleRecipeGroup: (recipeId: number) => void;
+  toggleCustomGroup: (groupId: string) => void;
   toggleItem: (id: string) => void;
   editItem: (id: string, updates: Partial<ShoppingItem>) => void;
   deleteItem: (id: string) => void;
@@ -69,6 +79,7 @@ export const ShoppingProvider: React.FC<ShoppingProviderProps> = ({ children }) 
 
   const [shoppingRecipes, setShoppingRecipes] = useState<ShoppingRecipe[]>([]);
   const [recipeGroups, setRecipeGroups] = useState<RecipeGroup[]>([]);
+  const [customGroups, setCustomGroups] = useState<CustomGroup[]>([]);
 
   // Update recipe groups when shopping items change
   useEffect(() => {
@@ -85,15 +96,40 @@ export const ShoppingProvider: React.FC<ShoppingProviderProps> = ({ children }) 
           isExpanded: true
         };
       }
-      if (acc[item.recipeId!]) {
-        acc[item.recipeId!].items.push(item);
-      }
+      acc[item.recipeId!]!.items.push(item);
       return acc;
     }, {} as Record<number, RecipeGroup>);
 
     // Convert to array and filter out empty groups
     const groupsArray = Object.values(groupedByRecipe).filter(group => group.items.length > 0);
     setRecipeGroups(groupsArray);
+  }, [shoppingItems]);
+
+  // Update custom groups when shopping items change
+  useEffect(() => {
+    const customItems = shoppingItems.filter(item => item.customGroupId);
+    
+    // Group items by custom group name (extract from customGroupId)
+    const groupedByCustom = customItems.reduce((acc, item) => {
+      // Extract group name from customGroupId (format: custom_GroupName)
+      const groupName = item.customGroupId!.replace(/^custom_/, '');
+      const groupId = `custom_${groupName}`;
+      
+      if (!acc[groupId]) {
+        acc[groupId] = {
+          id: groupId,
+          name: groupName,
+          items: [],
+          isExpanded: true
+        };
+      }
+      acc[groupId]!.items.push(item);
+      return acc;
+    }, {} as Record<string, CustomGroup>);
+
+    // Convert to array and filter out empty groups
+    const customGroupsArray = Object.values(groupedByCustom).filter(group => group.items.length > 0);
+    setCustomGroups(customGroupsArray);
   }, [shoppingItems]);
 
   const addItem = (item: Omit<ShoppingItem, 'id'>) => {
@@ -186,6 +222,16 @@ export const ShoppingProvider: React.FC<ShoppingProviderProps> = ({ children }) 
     );
   };
 
+  const toggleCustomGroup = (groupId: string) => {
+    setCustomGroups(prev => 
+      prev.map(group => 
+        group.id === groupId 
+          ? { ...group, isExpanded: !group.isExpanded }
+          : group
+      )
+    );
+  };
+
   const toggleItem = (id: string) => {
     setShoppingItems(prev =>
       prev.map(item =>
@@ -250,12 +296,14 @@ export const ShoppingProvider: React.FC<ShoppingProviderProps> = ({ children }) 
     shoppingItems,
     shoppingRecipes,
     recipeGroups,
+    customGroups,
     addItem,
     addRecipeIngredients,
     addRecipeToCart,
     removeRecipeFromCart,
     addIndividualIngredients,
     toggleRecipeGroup,
+    toggleCustomGroup,
     toggleItem,
     editItem,
     deleteItem,
