@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Clock, Users, Star, Heart, Plus } from 'lucide-react';
+import RecipeDetail from '../../components/RecipeDetail/RecipeDetail';
 import styles from './Recipes.module.scss';
 
 const Recipes: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('alle');
+  const [selectedRecipe, setSelectedRecipe] = useState<any>(null);
 
   const categories = [
     { id: 'alle', name: 'Alle', count: 24 },
@@ -26,7 +28,35 @@ const Recipes: React.FC = () => {
       rating: 4.8,
       category: 'mittagessen',
       difficulty: 'Einfach',
-      isFavorite: true
+      isFavorite: true,
+      description: 'Eine köstliche mediterrane Pasta mit frischen Tomaten, Basilikum und Mozzarella. Perfekt für ein schnelles und gesundes Mittagessen.',
+      ingredients: [
+        { name: 'Spaghetti', amount: '400', unit: 'g' },
+        { name: 'Tomaten', amount: '500', unit: 'g' },
+        { name: 'Mozzarella', amount: '200', unit: 'g' },
+        { name: 'Basilikum', amount: '1', unit: 'Bund' },
+        { name: 'Olivenöl', amount: '3', unit: 'EL' },
+        { name: 'Knoblauch', amount: '2', unit: 'Zehen' },
+        { name: 'Salz', amount: '1', unit: 'TL' },
+        { name: 'Pfeffer', amount: '1', unit: 'Prise' }
+      ],
+      instructions: [
+        { step: 1, description: 'Spaghetti nach Packungsanweisung in Salzwasser kochen.' },
+        { step: 2, description: 'Tomaten waschen und in kleine Würfel schneiden.' },
+        { step: 3, description: 'Mozzarella in kleine Stücke schneiden.' },
+        { step: 4, description: 'Knoblauch schälen und fein hacken.' },
+        { step: 5, description: 'Olivenöl in einer Pfanne erhitzen und Knoblauch kurz anbraten.' },
+        { step: 6, description: 'Tomaten hinzufügen und 5 Minuten köcheln lassen.' },
+        { step: 7, description: 'Spaghetti abgießen und mit der Tomatensauce vermischen.' },
+        { step: 8, description: 'Mozzarella und Basilikum unterheben, mit Salz und Pfeffer würzen.' }
+      ],
+      nutrition: {
+        calories: 420,
+        protein: 18,
+        carbs: 65,
+        fat: 12
+      },
+      tags: ['Vegetarisch', 'Italienisch', 'Schnell']
     },
     {
       id: 2,
@@ -37,7 +67,32 @@ const Recipes: React.FC = () => {
       rating: 4.6,
       category: 'fruehstueck',
       difficulty: 'Einfach',
-      isFavorite: false
+      isFavorite: false,
+      description: 'Eine nährstoffreiche Smoothie Bowl mit frischen Früchten und Toppings. Ideal für ein gesundes Frühstück.',
+      ingredients: [
+        { name: 'Bananen', amount: '2', unit: 'Stück' },
+        { name: 'Beeren', amount: '150', unit: 'g' },
+        { name: 'Joghurt', amount: '200', unit: 'g' },
+        { name: 'Haferflocken', amount: '4', unit: 'EL' },
+        { name: 'Honig', amount: '2', unit: 'TL' },
+        { name: 'Chiasamen', amount: '1', unit: 'EL' },
+        { name: 'Kokosflocken', amount: '2', unit: 'EL' }
+      ],
+      instructions: [
+        { step: 1, description: 'Bananen schälen und in Stücke schneiden.' },
+        { step: 2, description: 'Beeren waschen und verlesen.' },
+        { step: 3, description: 'Bananen, Beeren und Joghurt in einen Mixer geben.' },
+        { step: 4, description: 'Honig hinzufügen und alles pürieren.' },
+        { step: 5, description: 'Smoothie in Schalen füllen.' },
+        { step: 6, description: 'Mit Haferflocken, Chiasamen und Kokosflocken garnieren.' }
+      ],
+      nutrition: {
+        calories: 280,
+        protein: 12,
+        carbs: 45,
+        fat: 8
+      },
+      tags: ['Vegan', 'Gesund', 'Frühstück']
     },
     {
       id: 3,
@@ -48,7 +103,35 @@ const Recipes: React.FC = () => {
       rating: 4.9,
       category: 'abendessen',
       difficulty: 'Mittel',
-      isFavorite: true
+      isFavorite: true,
+      description: 'Saftiges gegrilltes Hähnchen mit mediterranen Gewürzen. Ein klassisches Gericht für den Grillabend.',
+      ingredients: [
+        { name: 'Hähnchenbrust', amount: '800', unit: 'g' },
+        { name: 'Olivenöl', amount: '4', unit: 'EL' },
+        { name: 'Zitrone', amount: '1', unit: 'Stück' },
+        { name: 'Rosmarin', amount: '2', unit: 'Zweige' },
+        { name: 'Thymian', amount: '2', unit: 'Zweige' },
+        { name: 'Knoblauch', amount: '4', unit: 'Zehen' },
+        { name: 'Salz', amount: '1', unit: 'TL' },
+        { name: 'Pfeffer', amount: '1', unit: 'TL' }
+      ],
+      instructions: [
+        { step: 1, description: 'Hähnchenbrust waschen und trocken tupfen.' },
+        { step: 2, description: 'Zitrone auspressen und Saft mit Olivenöl vermischen.' },
+        { step: 3, description: 'Knoblauch schälen und fein hacken.' },
+        { step: 4, description: 'Rosmarin und Thymian fein hacken.' },
+        { step: 5, description: 'Gewürze mit Zitronenöl vermischen und Hähnchen marinieren.' },
+        { step: 6, description: 'Mindestens 30 Minuten marinieren lassen.' },
+        { step: 7, description: 'Grill auf mittlere Hitze vorheizen.' },
+        { step: 8, description: 'Hähnchen 6-8 Minuten pro Seite grillen.' }
+      ],
+      nutrition: {
+        calories: 320,
+        protein: 45,
+        carbs: 2,
+        fat: 14
+      },
+      tags: ['Proteinreich', 'Grillen', 'Mittelmeer']
     },
     {
       id: 4,
@@ -59,7 +142,35 @@ const Recipes: React.FC = () => {
       rating: 4.5,
       category: 'mittagessen',
       difficulty: 'Einfach',
-      isFavorite: false
+      isFavorite: false,
+      description: 'Ein nährstoffreicher Quinoa Salat mit frischem Gemüse und einem leckeren Dressing.',
+      ingredients: [
+        { name: 'Quinoa', amount: '200', unit: 'g' },
+        { name: 'Gurke', amount: '1', unit: 'Stück' },
+        { name: 'Tomaten', amount: '2', unit: 'Stück' },
+        { name: 'Paprika', amount: '1', unit: 'Stück' },
+        { name: 'Zwiebel', amount: '1', unit: 'Stück' },
+        { name: 'Olivenöl', amount: '3', unit: 'EL' },
+        { name: 'Zitrone', amount: '1', unit: 'Stück' },
+        { name: 'Kräuter', amount: '1', unit: 'Bund' }
+      ],
+      instructions: [
+        { step: 1, description: 'Quinoa nach Packungsanweisung kochen und abkühlen lassen.' },
+        { step: 2, description: 'Gurke waschen und in kleine Würfel schneiden.' },
+        { step: 3, description: 'Tomaten waschen und würfeln.' },
+        { step: 4, description: 'Paprika entkernen und in Streifen schneiden.' },
+        { step: 5, description: 'Zwiebel schälen und fein würfeln.' },
+        { step: 6, description: 'Dressing aus Olivenöl, Zitronensaft und Kräutern herstellen.' },
+        { step: 7, description: 'Alle Zutaten in einer Schüssel vermischen.' },
+        { step: 8, description: 'Mit Dressing beträufeln und 10 Minuten ziehen lassen.' }
+      ],
+      nutrition: {
+        calories: 250,
+        protein: 8,
+        carbs: 35,
+        fat: 10
+      },
+      tags: ['Vegan', 'Gesund', 'Salat']
     },
     {
       id: 5,
@@ -70,7 +181,35 @@ const Recipes: React.FC = () => {
       rating: 4.7,
       category: 'desserts',
       difficulty: 'Einfach',
-      isFavorite: true
+      isFavorite: true,
+      description: 'Saftige Schokoladen Muffins mit einem zarten Schokoladenkern. Perfekt für den süßen Nachmittag.',
+      ingredients: [
+        { name: 'Mehl', amount: '250', unit: 'g' },
+        { name: 'Zucker', amount: '150', unit: 'g' },
+        { name: 'Kakao', amount: '50', unit: 'g' },
+        { name: 'Backpulver', amount: '2', unit: 'TL' },
+        { name: 'Eier', amount: '2', unit: 'Stück' },
+        { name: 'Milch', amount: '200', unit: 'ml' },
+        { name: 'Öl', amount: '80', unit: 'ml' },
+        { name: 'Schokolade', amount: '100', unit: 'g' }
+      ],
+      instructions: [
+        { step: 1, description: 'Backofen auf 180°C vorheizen.' },
+        { step: 2, description: 'Muffinblech mit Papierförmchen auslegen.' },
+        { step: 3, description: 'Mehl, Zucker, Kakao und Backpulver in einer Schüssel vermischen.' },
+        { step: 4, description: 'Eier, Milch und Öl in einer anderen Schüssel verquirlen.' },
+        { step: 5, description: 'Flüssige Zutaten zu den trockenen Zutaten geben und verrühren.' },
+        { step: 6, description: 'Schokolade in kleine Stücke hacken und unterheben.' },
+        { step: 7, description: 'Teig in die Muffinförmchen füllen.' },
+        { step: 8, description: '20-25 Minuten backen und abkühlen lassen.' }
+      ],
+      nutrition: {
+        calories: 180,
+        protein: 4,
+        carbs: 28,
+        fat: 7
+      },
+      tags: ['Süß', 'Backen', 'Schokolade']
     },
     {
       id: 6,
@@ -81,7 +220,33 @@ const Recipes: React.FC = () => {
       rating: 4.4,
       category: 'fruehstueck',
       difficulty: 'Einfach',
-      isFavorite: false
+      isFavorite: false,
+      description: 'Ein schneller und gesunder Avocado Toast mit frischen Toppings. Ideal für ein schnelles Frühstück.',
+      ingredients: [
+        { name: 'Brot', amount: '2', unit: 'Scheiben' },
+        { name: 'Avocado', amount: '1', unit: 'Stück' },
+        { name: 'Zitrone', amount: '0.5', unit: 'Stück' },
+        { name: 'Salz', amount: '1', unit: 'Prise' },
+        { name: 'Pfeffer', amount: '1', unit: 'Prise' },
+        { name: 'Chili', amount: '1', unit: 'Prise' },
+        { name: 'Koriander', amount: '1', unit: 'Zweig' }
+      ],
+      instructions: [
+        { step: 1, description: 'Brot toasten.' },
+        { step: 2, description: 'Avocado halbieren und Kern entfernen.' },
+        { step: 3, description: 'Avocado aus der Schale lösen und in eine Schüssel geben.' },
+        { step: 4, description: 'Mit Zitronensaft, Salz, Pfeffer und Chili würzen.' },
+        { step: 5, description: 'Avocado mit einer Gabel zerdrücken.' },
+        { step: 6, description: 'Auf das getoastete Brot streichen.' },
+        { step: 7, description: 'Mit Koriander garnieren und servieren.' }
+      ],
+      nutrition: {
+        calories: 220,
+        protein: 6,
+        carbs: 25,
+        fat: 12
+      },
+      tags: ['Vegan', 'Schnell', 'Gesund']
     }
   ];
 
@@ -90,6 +255,14 @@ const Recipes: React.FC = () => {
     const matchesCategory = selectedCategory === 'alle' || recipe.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const handleViewRecipe = (recipe: any) => {
+    setSelectedRecipe(recipe);
+  };
+
+  const handleCloseRecipe = () => {
+    setSelectedRecipe(null);
+  };
 
   return (
     <div className={styles.recipes}>
@@ -161,9 +334,11 @@ const Recipes: React.FC = () => {
                 </div>
               </div>
               
-              <button className={styles.addButton}>
-                <Plus size={16} />
-                Hinzufügen
+              <button 
+                className={styles.viewButton}
+                onClick={() => handleViewRecipe(recipe)}
+              >
+                Rezept anschauen
               </button>
             </div>
           </div>
@@ -177,6 +352,14 @@ const Recipes: React.FC = () => {
           Neues Rezept erstellen
         </button>
       </div>
+
+      {/* Recipe Detail Modal */}
+      {selectedRecipe && (
+        <RecipeDetail 
+          recipe={selectedRecipe} 
+          onClose={handleCloseRecipe} 
+        />
+      )}
     </div>
   );
 };
