@@ -12,6 +12,7 @@ import styles from './App.module.scss';
 
 import './fonts/fonts.css';
 import { DarkModeProvider, useDarkMode } from './contexts/DarkModeContext';
+import { ShoppingProvider } from './contexts/ShoppingContext';
 
 const AppContent: React.FC = () => {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -45,7 +46,9 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <DarkModeProvider>
-      <AppContent />
+      <ShoppingProvider>
+        <AppContent />
+      </ShoppingProvider>
     </DarkModeProvider>
   );
 };

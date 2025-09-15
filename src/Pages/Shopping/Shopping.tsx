@@ -1,126 +1,113 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Plus, Check, Tag, Filter, Search, Trash2, Edit3 } from 'lucide-react';
+import { ShoppingCart, Plus, Check, Tag, Filter, Search, Trash2, Edit3, ChevronDown, ChevronRight } from 'lucide-react';
+import { useShopping } from '../../contexts/ShoppingContext';
+import EditItemModal from '../../components/EditItemModal/EditItemModal';
 import styles from './Shopping.module.scss';
 
 const Shopping: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'list' | 'recipes'>('list');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState('alle');
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<any>(null);
+  const [isNewItem, setIsNewItem] = useState(false);
+
+  const { 
+    shoppingItems, 
+    shoppingRecipes,
+    recipeGroups,
+    addItem,
+    addIndividualIngredients,
+    removeRecipeFromCart,
+    toggleRecipeGroup,
+    toggleItem, 
+    editItem, 
+    deleteItem, 
+    clearCheckedItems 
+  } = useShopping();
 
   const tags = [
-    { id: 'alle', name: 'Alle', count: 24 },
-    { id: 'obst', name: 'Obst', count: 8 },
-    { id: 'gemuese', name: 'Gemüse', count: 12 },
-    { id: 'fleisch', name: 'Fleisch', count: 6 },
-    { id: 'milchprodukte', name: 'Milchprodukte', count: 4 },
-    { id: 'backwaren', name: 'Backwaren', count: 3 }
+    { id: 'alle', name: 'Alle', count: shoppingItems.length },
+    { id: 'obst', name: 'Obst', count: shoppingItems.filter(item => item.category === 'obst').length },
+    { id: 'gemuese', name: 'Gemüse', count: shoppingItems.filter(item => item.category === 'gemuese').length },
+    { id: 'fleisch', name: 'Fleisch', count: shoppingItems.filter(item => item.category === 'fleisch').length },
+    { id: 'milchprodukte', name: 'Milchprodukte', count: shoppingItems.filter(item => item.category === 'milchprodukte').length },
+    { id: 'backwaren', name: 'Backwaren', count: shoppingItems.filter(item => item.category === 'backwaren').length }
   ];
 
-  const shoppingItems = [
-    {
-      id: 1,
-      name: 'Tomaten',
-      quantity: '500g',
-      category: 'gemuese',
-      isChecked: false,
-      recipe: 'Mediterrane Pasta',
-      price: '2.50€'
-    },
-    {
-      id: 2,
-      name: 'Mozzarella',
-      quantity: '250g',
-      category: 'milchprodukte',
-      isChecked: true,
-      recipe: 'Caprese Salat',
-      price: '3.20€'
-    },
-    {
-      id: 3,
-      name: 'Basilikum',
-      quantity: '1 Bund',
-      category: 'gemuese',
-      isChecked: false,
-      recipe: 'Pesto Pasta',
-      price: '1.80€'
-    },
-    {
-      id: 4,
-      name: 'Spaghetti',
-      quantity: '500g',
-      category: 'backwaren',
-      isChecked: false,
-      recipe: 'Mediterrane Pasta',
-      price: '1.20€'
-    },
-    {
-      id: 5,
-      name: 'Olivenöl',
-      quantity: '1 Flasche',
-      category: 'alle',
-      isChecked: true,
-      recipe: 'Verschiedene',
-      price: '4.50€'
-    },
-    {
-      id: 6,
-      name: 'Knoblauch',
-      quantity: '3 Zehen',
-      category: 'gemuese',
-      isChecked: false,
-      recipe: 'Pasta Aglio e Olio',
-      price: '0.50€'
-    }
-  ];
 
-  const recipes = [
-    {
-      id: 1,
-      name: 'Mediterrane Pasta',
-      image: '/assets/img/Projects/project1.webp',
-      items: 4,
-      totalPrice: '7.40€',
-      isAdded: true
-    },
-    {
-      id: 2,
-      name: 'Caprese Salat',
-      image: '/assets/img/Projects/project2.jpg',
-      items: 3,
-      totalPrice: '5.50€',
-      isAdded: false
-    },
-    {
-      id: 3,
-      name: 'Pesto Pasta',
-      image: '/assets/img/Projects/project3.webp',
-      items: 5,
-      totalPrice: '8.20€',
-      isAdded: true
-    }
-  ];
+  // Separate regular items from recipe items
+  const regularItems = shoppingItems.filter(item => !item.isFromRecipe);
 
-  const filteredItems = shoppingItems.filter(item => {
+  const filteredRegularItems = regularItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesTag = selectedTag === 'alle' || item.category === selectedTag;
     return matchesSearch && matchesTag;
   });
 
-  const checkedItems = filteredItems.filter(item => item.isChecked);
-  const uncheckedItems = filteredItems.filter(item => !item.isChecked);
-  const totalPrice = filteredItems.reduce((sum, item) => {
-    return sum + parseFloat(item.price.replace('€', '').replace(',', '.'));
-  }, 0);
+  const checkedItems = filteredRegularItems.filter(item => item.isChecked);
+  const uncheckedItems = filteredRegularItems.filter(item => !item.isChecked);
 
-  const toggleItem = (id: number) => {
-    // In a real app, this would update the state
-    console.log('Toggle item:', id);
+  // Calculate total items including recipe items
+  const allItems = shoppingItems.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTag = selectedTag === 'alle' || item.category === selectedTag;
+    return matchesSearch && matchesTag;
+  });
+  
+  const allCheckedItems = allItems.filter(item => item.isChecked);
+
+  // Handle adding individual ingredients from recipe
+  const handleAddIngredients = (recipeId: number) => {
+    addIndividualIngredients(recipeId);
   };
 
-  const addRecipeToList = (recipeId: number) => {
-    // In a real app, this would add recipe items to shopping list
-    console.log('Add recipe to list:', recipeId);
+  // Handle removing recipe from cart
+  const handleRemoveRecipe = (recipeId: number) => {
+    removeRecipeFromCart(recipeId);
   };
+
+  const handleEditItem = (item: any) => {
+    setEditingItem(item);
+    setIsNewItem(false);
+    setEditModalOpen(true);
+  };
+
+  const handleAddNewItem = () => {
+    setEditingItem(null);
+    setIsNewItem(true);
+    setEditModalOpen(true);
+  };
+
+  const handleSaveItem = (itemData: { name: string; quantity: string; unit: string; category: string }) => {
+    if (isNewItem) {
+      addItem({
+        name: itemData.name,
+        quantity: itemData.quantity,
+        unit: itemData.unit,
+        category: itemData.category,
+        isChecked: false,
+        isFromRecipe: false
+      });
+    } else if (editingItem) {
+      editItem(editingItem.id, {
+        name: itemData.name,
+        quantity: itemData.quantity,
+        unit: itemData.unit,
+        category: itemData.category
+      });
+    }
+    setEditModalOpen(false);
+    setEditingItem(null);
+    setIsNewItem(false);
+  };
+
+  const handleCloseModal = () => {
+    setEditModalOpen(false);
+    setEditingItem(null);
+    setIsNewItem(false);
+  };
+
 
   return (
     <div className={styles.shopping}>
@@ -131,7 +118,7 @@ const Shopping: React.FC = () => {
           <button className={styles.filterButton}>
             <Filter size={20} />
           </button>
-          <button className={styles.addButton}>
+          <button className={styles.addButton} onClick={handleAddNewItem}>
             <Plus size={20} />
           </button>
         </div>
@@ -189,21 +176,100 @@ const Shopping: React.FC = () => {
           <div className={styles.summary}>
             <div className={styles.summaryItem}>
               <span className={styles.summaryLabel}>Gesamt:</span>
-              <span className={styles.summaryValue}>{filteredItems.length} Artikel</span>
+              <span className={styles.summaryValue}>{allItems.length} Artikel</span>
             </div>
             <div className={styles.summaryItem}>
               <span className={styles.summaryLabel}>Erledigt:</span>
-              <span className={styles.summaryValue}>{checkedItems.length}</span>
+              <span className={styles.summaryValue}>{allCheckedItems.length}</span>
             </div>
-            <div className={styles.summaryItem}>
-              <span className={styles.summaryLabel}>Preis:</span>
-              <span className={styles.summaryValue}>{totalPrice.toFixed(2)}€</span>
+            <div className={styles.clearButtons}>
+              {checkedItems.length > 0 && (
+                <button 
+                  className={styles.clearButton}
+                  onClick={clearCheckedItems}
+                >
+                  Erledigte löschen
+                </button>
+              )}
+              {filteredRegularItems.length > 0 && (
+                <button 
+                  className={styles.clearAllButton}
+                  onClick={() => {
+                    if (window.confirm('Möchten Sie wirklich alle Items löschen?')) {
+                      filteredRegularItems.forEach(item => deleteItem(item.id));
+                    }
+                  }}
+                >
+                  Alle löschen
+                </button>
+              )}
             </div>
           </div>
 
           {/* Shopping Items */}
           <div className={styles.itemsList}>
-            {/* Unchecked Items */}
+            {/* Recipe Groups */}
+            {recipeGroups.map(group => (
+              <div key={group.recipeId} className={styles.recipeGroup}>
+                <div className={styles.recipeGroupHeader} onClick={() => toggleRecipeGroup(group.recipeId)}>
+                  <div className={styles.recipeGroupInfo}>
+                    <div className={styles.recipeGroupImage}>
+                      <img src={group.recipeImage} alt={group.recipeName} />
+                    </div>
+                    <div className={styles.recipeGroupDetails}>
+                      <h3 className={styles.recipeGroupName}>{group.recipeName}</h3>
+                      <span className={styles.recipeGroupCount}>{group.items.length} Zutaten</span>
+                    </div>
+                  </div>
+                  <div className={styles.recipeGroupToggle}>
+                    {group.isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                  </div>
+                </div>
+                
+                {group.isExpanded && (
+                  <div className={styles.recipeGroupItems}>
+                    {group.items.map(item => (
+                      <div key={item.id} className={`${styles.shoppingItem} ${item.isChecked ? styles.checked : ''}`}>
+                        <button 
+                          className={styles.checkButton}
+                          onClick={() => toggleItem(item.id)}
+                        >
+                          <div className={`${styles.checkbox} ${item.isChecked ? styles.checked : ''}`}>
+                            {item.isChecked && <Check size={12} />}
+                          </div>
+                        </button>
+                        
+                        <div className={styles.itemInfo}>
+                          <h3 className={styles.itemName}>{item.name}</h3>
+                          <div className={styles.itemDetails}>
+                            <span className={styles.quantity}>{item.quantity} {item.unit}</span>
+                          </div>
+                        </div>
+                        
+                        <div className={styles.itemActions}>
+                          <div className={styles.actionButtons}>
+                            <button 
+                              className={styles.editButton}
+                              onClick={() => handleEditItem(item)}
+                            >
+                              <Edit3 size={16} />
+                            </button>
+                            <button 
+                              className={styles.deleteButton}
+                              onClick={() => deleteItem(item.id)}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+
+            {/* Regular Unchecked Items */}
             {uncheckedItems.map(item => (
               <div key={item.id} className={styles.shoppingItem}>
                 <button 
@@ -216,18 +282,22 @@ const Shopping: React.FC = () => {
                 <div className={styles.itemInfo}>
                   <h3 className={styles.itemName}>{item.name}</h3>
                   <div className={styles.itemDetails}>
-                    <span className={styles.quantity}>{item.quantity}</span>
-                    <span className={styles.recipe}>aus {item.recipe}</span>
+                    <span className={styles.quantity}>{item.quantity} {item.unit}</span>
                   </div>
                 </div>
                 
                 <div className={styles.itemActions}>
-                  <span className={styles.price}>{item.price}</span>
                   <div className={styles.actionButtons}>
-                    <button className={styles.editButton}>
+                    <button 
+                      className={styles.editButton}
+                      onClick={() => handleEditItem(item)}
+                    >
                       <Edit3 size={16} />
                     </button>
-                    <button className={styles.deleteButton}>
+                    <button 
+                      className={styles.deleteButton}
+                      onClick={() => deleteItem(item.id)}
+                    >
                       <Trash2 size={16} />
                     </button>
                   </div>
@@ -235,7 +305,7 @@ const Shopping: React.FC = () => {
               </div>
             ))}
 
-            {/* Checked Items */}
+            {/* Regular Checked Items */}
             {checkedItems.map(item => (
               <div key={item.id} className={`${styles.shoppingItem} ${styles.checked}`}>
                 <button 
@@ -250,18 +320,22 @@ const Shopping: React.FC = () => {
                 <div className={styles.itemInfo}>
                   <h3 className={styles.itemName}>{item.name}</h3>
                   <div className={styles.itemDetails}>
-                    <span className={styles.quantity}>{item.quantity}</span>
-                    <span className={styles.recipe}>aus {item.recipe}</span>
+                    <span className={styles.quantity}>{item.quantity} {item.unit}</span>
                   </div>
                 </div>
                 
                 <div className={styles.itemActions}>
-                  <span className={styles.price}>{item.price}</span>
                   <div className={styles.actionButtons}>
-                    <button className={styles.editButton}>
+                    <button 
+                      className={styles.editButton}
+                      onClick={() => handleEditItem(item)}
+                    >
                       <Edit3 size={16} />
                     </button>
-                    <button className={styles.deleteButton}>
+                    <button 
+                      className={styles.deleteButton}
+                      onClick={() => deleteItem(item.id)}
+                    >
                       <Trash2 size={16} />
                     </button>
                   </div>
@@ -276,41 +350,68 @@ const Shopping: React.FC = () => {
       {activeTab === 'recipes' && (
         <div className={styles.recipesTab}>
           <div className={styles.recipesList}>
-            {recipes.map(recipe => (
-              <div key={recipe.id} className={styles.recipeCard}>
-                <div className={styles.recipeImage}>
-                  <img src={recipe.image} alt={recipe.name} />
-                </div>
-                
-                <div className={styles.recipeInfo}>
-                  <h3 className={styles.recipeName}>{recipe.name}</h3>
-                  <div className={styles.recipeDetails}>
-                    <span className={styles.itemCount}>{recipe.items} Artikel</span>
-                    <span className={styles.recipePrice}>{recipe.totalPrice}</span>
+            {shoppingRecipes.length > 0 ? (
+              shoppingRecipes.map(recipe => (
+                <div key={recipe.id} className={styles.recipeCard}>
+                  <div className={styles.recipeImage}>
+                    <img src={recipe.image} alt={recipe.title} />
+                  </div>
+                  
+                  <div className={styles.recipeInfo}>
+                    <h3 className={styles.recipeName}>{recipe.title}</h3>
+                    <div className={styles.recipeDetails}>
+                      <span className={styles.itemCount}>{recipe.ingredients.length} Zutaten</span>
+                      <span className={styles.servings}>{recipe.servings} Portionen</span>
+                    </div>
+                  </div>
+                  
+                  <div className={styles.recipeActions}>
+                    <button 
+                      className={styles.addIngredientsButton}
+                      onClick={() => handleAddIngredients(recipe.id)}
+                    >
+                      <Plus size={16} />
+                      Zutaten hinzufügen
+                    </button>
+                    <button 
+                      className={styles.deleteRecipeButton}
+                      onClick={() => handleRemoveRecipe(recipe.id)}
+                    >
+                      <Trash2 size={16} />
+                      Entfernen
+                    </button>
                   </div>
                 </div>
-                
-                <button 
-                  className={`${styles.addRecipeButton} ${recipe.isAdded ? styles.added : ''}`}
-                  onClick={() => addRecipeToList(recipe.id)}
-                >
-                  {recipe.isAdded ? (
-                    <>
-                      <Check size={16} />
-                      Hinzugefügt
-                    </>
-                  ) : (
-                    <>
-                      <Plus size={16} />
-                      Hinzufügen
-                    </>
-                  )}
-                </button>
+              ))
+            ) : (
+              <div className={styles.emptyState}>
+                <ShoppingCart size={48} />
+                <h3>Keine Rezepte hinzugefügt</h3>
+                <p>Gehen Sie zu den Rezepten und fügen Sie Rezepte zur Einkaufsliste hinzu.</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       )}
+
+      {/* Edit Item Modal */}
+      <EditItemModal
+        isOpen={editModalOpen}
+        onClose={handleCloseModal}
+        onSave={handleSaveItem}
+        initialData={editingItem ? {
+          name: editingItem.name,
+          quantity: editingItem.quantity,
+          unit: editingItem.unit,
+          category: editingItem.category
+        } : {
+          name: '',
+          quantity: '',
+          unit: 'g',
+          category: 'alle'
+        }}
+        isNewItem={isNewItem}
+      />
     </div>
   );
 };

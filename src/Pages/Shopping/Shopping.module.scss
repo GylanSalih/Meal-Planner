@@ -272,6 +272,119 @@
   gap: 8px;
 }
 
+// Recipe Groups
+.recipeGroup {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  
+  [data-theme="dark"] & {
+    background: #1f2937;
+    border-color: #374151;
+  }
+}
+
+.recipeGroupHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background: #f1f5f9;
+    
+    [data-theme="dark"] & {
+      background: #374151;
+    }
+  }
+}
+
+.recipeGroupInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.recipeGroupImage {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.recipeGroupDetails {
+  flex: 1;
+}
+
+.recipeGroupName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #000000;
+  margin: 0 0 4px 0;
+  
+  [data-theme="dark"] & {
+    color: #ffffff;
+  }
+}
+
+.recipeGroupCount {
+  font-size: 14px;
+  color: #6b7280;
+  
+  [data-theme="dark"] & {
+    color: #9ca3af;
+  }
+}
+
+.recipeGroupToggle {
+  color: #6b7280;
+  transition: transform 0.2s ease;
+  
+  [data-theme="dark"] & {
+    color: #9ca3af;
+  }
+}
+
+.recipeGroupItems {
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
+  
+  [data-theme="dark"] & {
+    border-top-color: #374151;
+    background: #111827;
+  }
+  
+  .shoppingItem {
+    border: none;
+    border-radius: 0;
+    margin: 0;
+    
+    &:not(:last-child) {
+      border-bottom: 1px solid #f3f4f6;
+      
+      [data-theme="dark"] & {
+        border-bottom-color: #374151;
+      }
+    }
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
 .shoppingItem {
   display: flex;
   align-items: center;
@@ -383,11 +496,6 @@
   gap: 12px;
 }
 
-.price {
-  font-size: 16px;
-  font-weight: 700;
-  color: #f97316;
-}
 
 .actionButtons {
   display: flex;
@@ -509,10 +617,15 @@
   font-weight: 500;
 }
 
-.recipePrice {
-  font-weight: 600;
-  color: #f97316;
+.servings {
+  font-weight: 500;
+  color: #6b7280;
+  
+  [data-theme="dark"] & {
+    color: #9ca3af;
+  }
 }
+
 
 .addRecipeButton {
   display: flex;
@@ -583,5 +696,193 @@
   
   .listTab, .recipesTab {
     padding: 0 12px;
+  }
+}
+
+// Edit Form Styles
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.editInput {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #ffffff;
+  color: #000000;
+  
+  &:focus {
+    outline: none;
+    border-color: #f97316;
+    box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
+  }
+  
+  [data-theme="dark"] & {
+    background: #374151;
+    border-color: #4b5563;
+    color: #ffffff;
+  }
+}
+
+.quantityEdit {
+  display: flex;
+  gap: 8px;
+  
+  .editInput {
+    flex: 1;
+  }
+}
+
+.editActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.saveButton, .cancelButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.saveButton {
+  background: #10b981;
+  color: #ffffff;
+  
+  &:hover {
+    background: #059669;
+  }
+}
+
+.cancelButton {
+  background: #ef4444;
+  color: #ffffff;
+  
+  &:hover {
+    background: #dc2626;
+  }
+}
+
+.clearButtons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.clearButton, .clearAllButton {
+  padding: 8px 16px;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clearButton {
+  background: #ef4444;
+  
+  &:hover {
+    background: #dc2626;
+  }
+}
+
+.clearAllButton {
+  background: #6b7280;
+  
+  &:hover {
+    background: #4b5563;
+  }
+}
+
+.recipeActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.addIngredientsButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #059669;
+  }
+}
+
+.deleteRecipeButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: #dc2626;
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: #6b7280;
+  
+  svg {
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+  
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: #374151;
+  }
+  
+  p {
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.5;
+  }
+  
+  [data-theme="dark"] & {
+    color: #9ca3af;
+    
+    h3 {
+      color: #d1d5db;
+    }
   }
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Clock, Users, Star, ChefHat, ShoppingCart, Heart, Share2, Plus, Minus } from 'lucide-react';
+import { ArrowLeft, Clock, Users, Flame, ShoppingCart, Heart, Share2, Plus, Minus, Check } from 'lucide-react';
+import { useShopping } from '../../contexts/ShoppingContext';
 import styles from './RecipeDetail.module.scss';
 
 interface RecipeDetailProps {
@@ -9,7 +10,6 @@ interface RecipeDetailProps {
     image: string;
     time: string;
     servings: number;
-    rating: number;
     difficulty: string;
     isFavorite: boolean;
     description: string;
@@ -37,6 +37,21 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe, onClose }) => {
   const [servingCount, setServingCount] = useState(recipe.servings);
   const [isFavorite, setIsFavorite] = useState(recipe.isFavorite);
   const [activeTab, setActiveTab] = useState<'ingredients' | 'instructions' | 'nutrition'>('ingredients');
+  const [isAddedToShopping, setIsAddedToShopping] = useState(false);
+  
+  // Safely get shopping context
+  let addRecipeToCart: any = () => {};
+  let removeRecipeFromCart: any = () => {};
+  let shoppingRecipes: any[] = [];
+  
+  try {
+    const shoppingContext = useShopping();
+    addRecipeToCart = shoppingContext.addRecipeToCart;
+    removeRecipeFromCart = shoppingContext.removeRecipeFromCart;
+    shoppingRecipes = shoppingContext.shoppingRecipes;
+  } catch (error) {
+    console.warn('Shopping context not available:', error);
+  }
 
   const adjustServings = (direction: 'increase' | 'decrease') => {
     if (direction === 'increase') {
@@ -51,9 +66,38 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe, onClose }) => {
   };
 
   const addToShoppingList = () => {
-    // In a real app, this would add ingredients to shopping list
-    console.log('Add to shopping list:', recipe.ingredients);
+    if (isAddedToShopping) {
+      // Remove from shopping list
+      try {
+        removeRecipeFromCart(recipe.id);
+        setIsAddedToShopping(false);
+      } catch (error) {
+        console.error('Error removing recipe from shopping list:', error);
+        setIsAddedToShopping(false);
+      }
+    } else {
+      // Add to shopping list
+      try {
+        addRecipeToCart(recipe);
+        setIsAddedToShopping(true);
+      } catch (error) {
+        console.error('Error adding recipe to shopping list:', error);
+        // Fallback: just show success message
+        setIsAddedToShopping(true);
+      }
+    }
   };
+
+  // Check if recipe is already in shopping list
+  React.useEffect(() => {
+    try {
+      const isInShoppingList = shoppingRecipes.some(recipeItem => recipeItem.id === recipe.id);
+      setIsAddedToShopping(isInShoppingList);
+    } catch (error) {
+      console.error('Error checking shopping list:', error);
+      setIsAddedToShopping(false);
+    }
+  }, [shoppingRecipes, recipe.id]);
 
   const shareRecipe = () => {
     // In a real app, this would share the recipe
@@ -88,9 +132,9 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe, onClose }) => {
             <div className={styles.difficultyBadge}>
               {recipe.difficulty}
             </div>
-            <div className={styles.ratingBadge}>
-              <Star size={16} />
-              {recipe.rating}
+            <div className={styles.caloriesBadge}>
+              <Flame size={16} />
+              {recipe.nutrition.calories} kcal
             </div>
           </div>
         </div>
@@ -139,9 +183,21 @@ const RecipeDetail: React.FC<RecipeDetailProps> = ({ recipe, onClose }) => {
 
         {/* Action Buttons */}
         <div className={styles.actionButtons}>
-          <button className={styles.addToShoppingButton} onClick={addToShoppingList}>
-            <ShoppingCart size={20} />
-            Zur Einkaufsliste hinzufügen
+          <button 
+            className={`${styles.addToShoppingButton} ${isAddedToShopping ? styles.added : ''}`}
+            onClick={addToShoppingList}
+          >
+            {isAddedToShopping ? (
+              <>
+                <Check size={20} />
+                Zur Einkaufsliste hinzugefügt
+              </>
+            ) : (
+              <>
+                <ShoppingCart size={20} />
+                Zur Einkaufsliste hinzufügen
+              </>
+            )}
           </button>
         </div>
       </div>

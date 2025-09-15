@@ -143,7 +143,7 @@
   gap: 8px;
 }
 
-.difficultyBadge, .ratingBadge {
+.difficultyBadge, .caloriesBadge {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -156,8 +156,8 @@
   backdrop-filter: blur(10px);
 }
 
-.ratingBadge {
-  background: rgba(249, 115, 22, 0.9);
+.caloriesBadge {
+  background: rgba(239, 68, 68, 0.9);
 }
 
 // Recipe Info
@@ -303,14 +303,38 @@
   cursor: pointer;
   transition: all 0.2s ease;
   
-  &:hover {
+  &:hover:not(:disabled) {
     background: #ea580c;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
   }
   
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(0);
+  }
+  
+  &:disabled {
+    background: #10b981;
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.3);
+  }
+  
+  &.added:hover {
+    background: #059669;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+  }
+  
+  &.added {
+    background: #10b981;
+    
+    &:hover {
+      background: #059669;
+    }
   }
 }
 

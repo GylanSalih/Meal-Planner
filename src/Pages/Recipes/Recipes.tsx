@@ -1,31 +1,16 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, Filter, Clock, Users, Star, Heart, Plus } from 'lucide-react';
+import { Search, Filter, Clock, Users, Flame, Heart, Plus } from 'lucide-react';
 import RecipeDetail from '../../components/RecipeDetail/RecipeDetail';
+import RecipeForm from '../../components/RecipeForm/RecipeForm';
 import styles from './Recipes.module.scss';
 
-const Recipes: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('alle');
-  const [selectedRecipe, setSelectedRecipe] = useState<any>(null);
-
-  const categories = [
-    { id: 'alle', name: 'Alle', count: 24 },
-    { id: 'fruehstueck', name: 'Frühstück', count: 8 },
-    { id: 'mittagessen', name: 'Mittagessen', count: 12 },
-    { id: 'abendessen', name: 'Abendessen', count: 10 },
-    { id: 'snacks', name: 'Snacks', count: 6 },
-    { id: 'desserts', name: 'Desserts', count: 4 }
-  ];
-
-  const recipes = [
+const initialRecipes = [
     {
       id: 1,
       title: 'Mediterrane Pasta',
       image: '/assets/img/Projects/project1.webp',
       time: '25 Min',
       servings: 4,
-      rating: 4.8,
       category: 'mittagessen',
       difficulty: 'Einfach',
       isFavorite: true,
@@ -64,7 +49,6 @@ const Recipes: React.FC = () => {
       image: '/assets/img/Projects/project2.jpg',
       time: '10 Min',
       servings: 2,
-      rating: 4.6,
       category: 'fruehstueck',
       difficulty: 'Einfach',
       isFavorite: false,
@@ -100,7 +84,6 @@ const Recipes: React.FC = () => {
       image: '/assets/img/Projects/project3.webp',
       time: '45 Min',
       servings: 6,
-      rating: 4.9,
       category: 'abendessen',
       difficulty: 'Mittel',
       isFavorite: true,
@@ -139,7 +122,6 @@ const Recipes: React.FC = () => {
       image: '/assets/img/Projects/project4.webp',
       time: '20 Min',
       servings: 3,
-      rating: 4.5,
       category: 'mittagessen',
       difficulty: 'Einfach',
       isFavorite: false,
@@ -178,7 +160,6 @@ const Recipes: React.FC = () => {
       image: '/assets/img/Projects/project5.webp',
       time: '30 Min',
       servings: 12,
-      rating: 4.7,
       category: 'desserts',
       difficulty: 'Einfach',
       isFavorite: true,
@@ -217,7 +198,6 @@ const Recipes: React.FC = () => {
       image: '/assets/img/Projects/project6.webp',
       time: '5 Min',
       servings: 1,
-      rating: 4.4,
       category: 'fruehstueck',
       difficulty: 'Einfach',
       isFavorite: false,
@@ -250,6 +230,22 @@ const Recipes: React.FC = () => {
     }
   ];
 
+const Recipes: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('alle');
+  const [selectedRecipe, setSelectedRecipe] = useState<any>(null);
+  const [showRecipeForm, setShowRecipeForm] = useState(false);
+  const [recipes, setRecipes] = useState(initialRecipes);
+
+  const categories = [
+    { id: 'alle', name: 'Alle', count: 24 },
+    { id: 'fruehstueck', name: 'Frühstück', count: 8 },
+    { id: 'mittagessen', name: 'Mittagessen', count: 12 },
+    { id: 'abendessen', name: 'Abendessen', count: 10 },
+    { id: 'snacks', name: 'Snacks', count: 6 },
+    { id: 'desserts', name: 'Desserts', count: 4 }
+  ];
+
   const filteredRecipes = recipes.filter(recipe => {
     const matchesSearch = recipe.title.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === 'alle' || recipe.category === selectedCategory;
@@ -262,6 +258,19 @@ const Recipes: React.FC = () => {
 
   const handleCloseRecipe = () => {
     setSelectedRecipe(null);
+  };
+
+  const handleCreateRecipe = () => {
+    setShowRecipeForm(true);
+  };
+
+  const handleCloseRecipeForm = () => {
+    setShowRecipeForm(false);
+  };
+
+  const handleSaveRecipe = (newRecipe: any) => {
+    setRecipes(prevRecipes => [...prevRecipes, newRecipe]);
+    setShowRecipeForm(false);
   };
 
   return (
@@ -329,8 +338,8 @@ const Recipes: React.FC = () => {
                   <span>{recipe.servings} Portionen</span>
                 </div>
                 <div className={styles.metaItem}>
-                  <Star size={14} />
-                  <span>{recipe.rating}</span>
+                  <Flame size={14} />
+                  <span>{recipe.nutrition.calories} kcal</span>
                 </div>
               </div>
               
@@ -347,7 +356,7 @@ const Recipes: React.FC = () => {
 
       {/* Add Recipe Button */}
       <div className={styles.addRecipeSection}>
-        <button className={styles.addRecipeButton}>
+        <button className={styles.addRecipeButton} onClick={handleCreateRecipe}>
           <Plus size={20} />
           Neues Rezept erstellen
         </button>
@@ -358,6 +367,14 @@ const Recipes: React.FC = () => {
         <RecipeDetail 
           recipe={selectedRecipe} 
           onClose={handleCloseRecipe} 
+        />
+      )}
+
+      {/* Recipe Form Modal */}
+      {showRecipeForm && (
+        <RecipeForm 
+          onClose={handleCloseRecipeForm}
+          onSave={handleSaveRecipe}
         />
       )}
     </div>
